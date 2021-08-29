@@ -1,0 +1,30 @@
+[ 문제 2 ] 문자 #을 포함한 임의 개수(1 이상 20 이하)의 문자를 입력 받은 후, 첫번째 # 이전까지의 문자들을 포인터를 사용하여 역순으로 출력하시오. (#이 두 개 있는 경우도 있음)
+▶ 배열 표기 [ ] 는 사용 금지 (포인터 표기 사용) <-- 추가된 조건
+즉, char ch[20]; 배열 선언하고, 이 다음부터 배열 표기 [ ] 사용 
+
+
+#include<stdio.h>
+#pragma warning(disable:4996)
+int main() {
+
+    /* Type or paste your code in this area */
+
+    char ch[20];
+    int tmp=0;
+    
+    for (int i = 0; i < 20; i++)
+    {
+        scanf("%c", (ch + i));
+        if (*(ch + i) == '#')
+            break;
+        tmp += 1;
+    }
+
+    for (int i = tmp-1; i >= 0; i--)
+    {
+        printf("%c", *(ch + i));
+    }
+    
+
+    return 0;
+}
