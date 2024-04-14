@@ -1,0 +1,165 @@
+<자료구조 실습> - 연결리스트 (1)
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+	char elem;
+	struct node* next;
+	struct node* prev;
+}Node;
+
+// 리스트 정의하기
+typedef struct list {
+	Node* header;
+	Node* trailer;
+	int size;
+}List;
+
+// 리스트 초기화하기
+List* init() {
+	List* list;
+	list = (List*)malloc(sizeof(List));
+	list->header = (Node*)malloc(sizeof(Node));
+	list->trailer = (Node*)malloc(sizeof(Node));
+	list->header->next = list->trailer;
+	list->header->prev = NULL;
+	list->trailer->next = NULL;
+	list->trailer->prev = list->header;
+	list->size = 0;
+
+	return list;
+}
+
+void print(List* list)
+{
+	Node* current = list->header->next;
+	while (current != list->trailer)
+	{
+		printf("%c", current->elem);
+		current = current->next;
+	}
+}
+
+void addNodeBefore(Node *p, char e)
+{
+	Node *newnode = (Node*)malloc(sizeof(Node));
+	newnode->elem = e;
+	newnode->prev = p->prev;
+	newnode->next = p;
+	p->prev->next = newnode;
+	p->prev = newnode;
+	return;
+}
+
+void add(List *list, int r, char e)
+{
+	if (r > list->size +1)
+	{
+		printf("invalid position\n");
+		return;
+	}
+	Node* current = list->header;
+
+	for (int i = 0; i < r; i++)
+	{
+		if (current->next == NULL)
+		{
+			printf("invalid position\n");
+			return;
+		}
+		current = current->next;
+	}
+	addNodeBefore(current, e);
+	list->size = list->size + 1;
+	return;
+}
+
+char get(List* list, int r) 
+{
+	if (r > list->size)
+	{
+		printf("invalid position\n");
+		return '0';
+	}
+	Node* current = list->header->next;
+
+	for (int i=0; i<r; i++)
+	{
+		if (current->next == NULL)
+		{
+			printf("invalid position\n");
+			return '0';
+		}
+		current = current->next;
+	}
+	return current->prev->elem;
+}
+
+
+void removeNode(Node *p)
+{
+	p->prev->next = p->next;
+	p->next->prev = p->prev;
+	free(p);
+}
+
+void del(List* list, int r)
+{
+	if (r > list->size)
+	{
+		printf("invalid position\n");
+		return;
+	}
+	Node* current = list->header;
+	for (int i = 0; i < r; i++)
+	{
+		if (current->next == NULL)
+		{
+			printf("invalid position\n");
+			return;
+		}
+		current = current->next;
+	}
+	removeNode(current);
+	list->size = list->size - 1;
+	return;
+}
+
+int main() {
+	List* list = init(); // -> 초기화 선언됨
+	char c, c1;
+	int n,g;
+	
+	scanf("%d", &n);
+	for(int i=0; i<n; i++)
+	{
+		getchar();
+		scanf("%c",&c);
+		if (c == 'A')
+		{
+			scanf("%d %c", &g, &c1);
+			add(list, g, c1);
+		}
+		else if (c == 'P')
+		{
+			print(list);
+			printf("\n");
+		}
+		else if (c == 'G')
+		{
+			scanf("%d", &g);
+			char a = get(list, g);
+			if (a == '0')
+				continue;
+			printf("%c\n",a);
+		}
+		else if (c== 'D')
+		{
+			scanf("%d", &g);
+			del(list, g);
+		}
+	}
+}
